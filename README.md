@@ -9,20 +9,20 @@ El objetivo de esta asignatura es aprender a instalar, configurar y administrar 
 A continuación se detallan las prácticas realizadas durante el curso:
 
 ### Bloque 1: Programación de Sistemas Unix
-* **Práctica 1.1:** [Introducción a la programación de sistemas Unix](./P1.1)
-* **Práctica 1.2:** [Sistema de Ficheros](./P1.2)
-* **Práctica 1.3:** [Procesos](./P1.3)
-* **Práctica 1.4:** [Señales y tuberías](./P1.4)
+* **Práctica 1.1:** Introducción a la programación de sistemas Unix
+* **Práctica 1.2:** Sistema de Ficheros
+* **Práctica 1.3:** Procesos
+* **Práctica 1.4:** Señales y tuberías
 
 ### Bloque 2: Redes y Protocolos
-* **Práctica 2.1:** [IPv4 y DHCP](./P2.1)
-* **Práctica 2.2:** [TCP y NAT](./P2.2)
-* **Práctica 2.3:** [DNS](./P2.3)
-* **Práctica 2.4:** [IPv6](./P2.4)
-* **Práctica 2.5:** [RIP y BGP](./P2.5)
+* **Práctica 2.1:** IPv4 y DHCP
+* **Práctica 2.2:** TCP y NAT
+* **Práctica 2.3:** DNS
+* **Práctica 2.4:** IPv6
+* **Práctica 2.5:** RIP y BGP
 
 ### Bloque 3: Comunicaciones
-* **Práctica 3.1:** [Sockets](./P3.1)
+* **Práctica 3.1:** Sockets
 
 ## 🛠️ Tecnologías y Herramientas
 * **Sistemas Operativos:** Linux (Ubuntu/Debian), Windows Server.
@@ -31,4 +31,40 @@ A continuación se detallan las prácticas realizadas durante el curso:
 * **Redes:** Protocolos IPv4/IPv6, enrutamiento dinámico (RIP, BGP) y sockets.
 
 ## 👤 Autor
+* **CarmenMS03** - [GitHub Profile](https://github.com/CarmenMS03)
+-----------------------------------------------------------------------------------------------------
+
+# 🖥️ ASOR - Advanced Operating Systems and Networks (UCM)
+
+This repository contains all the practical assignments completed during the **Advanced Operating Systems and Networks (ASOR)** course, as part of the Degree in Computer Engineering at **Universidad Complutense de Madrid**.
+
+## 📝 Description
+The goal of this course is to learn how to install, configure, and manage server operating systems (such as Windows Server and Linux distributions), as well as managing network services, users, permissions, and security. Additionally, it covers advanced networking concepts like IPv4, IPv6, Internet protocols, and service administration.
+
+## 📁 Repository Content
+The following practical assignments are included in this repository:
+
+### Block 1: Unix Systems Programming
+* **Lab 1.1:** Introduction to Unix Systems Programming
+* **Lab 1.2:** File Systems
+* **Lab 1.3:** Processes
+* **Lab 1.4:** Signals and Pipes
+
+### Block 2: Networking and Protocols
+* **Lab 2.1:** IPv4 and DHCP
+* **Lab 2.2:** TCP and NAT
+* **Lab 2.3:** DNS
+* **Lab 2.4:** IPv6
+* **Lab 2.5:** RIP and BGP
+
+### Block 3: Communications
+* **Lab 3.1:** Sockets
+
+## 🛠️ Technologies & Tools
+* **Operating Systems:** Linux (Ubuntu/Debian), Windows Server.
+* **Virtualization:** VirtualBox / VMware.
+* **Services:** Active Directory, LDAP, DNS, DHCP, Web Servers.
+* **Networking:** IPv4/IPv6 protocols, dynamic routing (RIP, BGP), and sockets.
+
+## 👤 Author
 * **CarmenMS03** - [GitHub Profile](https://github.com/CarmenMS03)
