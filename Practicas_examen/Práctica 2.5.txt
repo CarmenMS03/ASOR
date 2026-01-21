@@ -1,0 +1,68 @@
+**EJ6**
+AS		TIPO		PREFIJOS AGREGADOS
+100		Stub		2001:db8:100::/47
+200		Transit		
+300		Stub		2001:db8:300::/47
+
+**EJ7**
+
+vm_1 (etc/frr/frr.conf)
+# Activar el encaminamiento BGP en el AS 100 
+router bgp 100 
+  # Establecer el identificador de encaminador BGP 
+  bgp router-id 0.0.0.1 
+ 
+  no bgp network import-check 
+  no bgp ebgp-requires-policy 
+
+ # Añadir el encaminador BGP vecino en el AS 200 
+  neighbor 2001:db8:200:1::2 remote-as 200 
+  # Trabajar con direcciones IPv6 
+  address-family ipv6 
+    # Anunciar un prefijo de red agregado 
+    network 2001:db8:100::/47 
+    # Activar IPv6 en el encaminador BGP vecino 
+    neighbor 2001:db8:200:1::2 activate 
+  exit-address-family
+
+vm_2 (etc/frr/frr.conf)
+
+# Activar el encaminamiento BGP en el AS 200 
+router bgp 200 
+  # Establecer el identificador de encaminador BGP 
+  bgp router-id 0.0.0.2 
+ 
+  no bgp network import-check 
+  no bgp ebgp-requires-policy 
+ 
+  # Añadir el encaminador BGP vecino en el AS 100 y AS 300
+  neighbor 2001:db8:200:1::1 remote-as 100 
+  neighbor 2001:db8:200:2::3 remote-as 300 
+  # Trabajar con direcciones IPv6 
+  address-family ipv6 
+    # Anunciar un prefijo de red agregado
+      network 2001:db8:200:1::/64   # Red de enlace con AS 100
+      network 2001:db8:200:2::/64   # Red de enlace con AS 300
+    # Activar IPv6 en el encaminador BGP vecino 
+    neighbor 2001:db8:200:1::1 activate 
+    neighbor 2001:db8:200:2::3 activate 
+  exit-address-family
+
+vm_3 (etc/frr/frr.conf)
+# Activar el encaminamiento BGP en el AS 300 
+router bgp 300 
+  # Establecer el identificador de encaminador BGP 
+  bgp router-id 0.0.0.3 
+ 
+  no bgp network import-check 
+  no bgp ebgp-requires-policy 
+ 
+  # Añadir el encaminador BGP vecino en el AS 200 
+  neighbor 2001:db8:200:2::2 remote-as 200 
+  # Trabajar con direcciones IPv6 
+  address-family ipv6 
+    # Anunciar un prefijo de red agregado 
+    network 2001:db8:300::/47
+    # Activar IPv6 en el encaminador BGP vecino 
+    neighbor 2001:db8:200:2::2 activate 
+  exit-address-family 

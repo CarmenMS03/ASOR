@@ -1,0 +1,131 @@
+****EJ1***
+ip link set enp0s3 up en vm_1 y vm_2
+--> Al activar la interfaz enp0s3, el sistema asigna automáticamente una dirección IPv6 de enlace local (fe80:.../64) con ámbito enlace local. También el nodo dispone de la dirección de loopback ::1/128
+
+***EJ2****
+ping6 fe80::a00:27ff:fe88:453f%enp0s3 (dirección de enlace local del enp0s3 de vm_2) saliendo por enp0s3 de vm_1
+
+--> añadir el nombre de la interfaz DE ORIGEN al usar direcciones de enlace local. Se indica la interfaz de origen y el protocolo encontrara la interfaz de destino asociada a esa dirección (que aunque el host al que vayamos tenga varias interfaces con la misma dirección SOLO UNA pertenece la mismo enlace--> ámbito local)
+Esto fija el enlace en el que estamos: Aunque un router tenga varias interfaces con la misma dirección de enlace local, solo una de ellas estará conectada al mismo enlace que el host emisor, por lo que el paquete llegará únicamente a esa interfaz.
+
+Las direcciones IPv6 de enlace local deben ser únicas dentro de un enlace. Interfaces de distintos nodos no pueden compartir la misma dirección link-local en el mismo enlace. Sin embargo, un mismo nodo puede asignar la misma dirección link-local a varias interfaces, ya que cada una pertenece a un enlace distinto.
+En IPv6, la dirección link-local identifica una interfaz dentro de un enlace, no un host globalmente.
+
+**EJ3**
+vm_1 -> vm_3router
+ping6 fe80::a00:27ff:fe19:e668%enp0s3 (dirección de enlace local del enp0s3 de vm_3router) saliendo por enp0s3 de vm_1
+
+vm_3router -> vm_1 
+ping6 fe80::a00:27ff:fef7:5425%enp0s3 (dirección de enlace local del enp0s3 de vm_1) saliendo por enp0s3 de vm_3router
+
+vm_3router -> vm_4
+ping6 fe80::a00:27ff:fe77:2a03%enp0s8 (dirección de enlace local del enp0s3 de vm_4) saliendo por enp0s8 de vm_3router
+
+vm_4 -> vm_3router
+ping6 fe80::a00:27ff:fe3c:6549%enp0s3 (dirección de enlace local del enp0s8 de vm_3router) saliendo por enp0s3 de vm_4
+
+
+**EJ4**
+vm_1
+ip a a fd00:0:0:a::1/64 dev enp0s3
+
+vm_2
+ip a a fd00:0:0:a::2/64 dev enp0s3
+
+**EJ5**
+vm_1
+ping6 fd00:0:0:a::2
+
+**EJ6**
+vm_3router
+ip a a fd00:0:0:a::3/64 dev enp0s3
+ip a a fd00:0:0:b::3/64 dev enp0s8
+
+vm_4
+ip a a fd00:0:0:b::4/64 dev enp0s3
+
+**EJ7**
+vm_3router
+ping6 fd00:0:0:a::1
+ping6 fd00:0:0:b::4
+
+vm_1
+ping6 fd00:0:0:b::4
+ping6: connect: Network is unreachable
+
+**EJ8**
+vm_1
+ip -6 route
+::1 dev lo proto kernel metric 256 pref médium --> loopback
+fd00:0:0:a::/64 dev enp0s3 proto kernel metric 256 pref médium --> dirección de red ULA por enp0s3 (configurada automáticamente al incluir la direccion ULA asociada)
+fe80::/64 dev enp0s3 proto kernel metric 256 pref médium --> dirección de red de enlace local por enp0s3 (configurada automáticamente según se activa enp0s3)
+
+vm_3router
+ip -6 route
+::1 dev lo proto kernel metric 256 pref médium --> loopback
+fd00:0:0:a::/64 dev enp0s3 proto kernel metric 256 pref médium --> dirección de red ULA por enp0s3 (configurada automáticamente al incluir la direccion ULA asociada)
+fd00:0:0:b::/64 dev enp0s8 proto kernel metric 256 pref medium--> dirección de red ULA por enp0s8 (configurada automáticamente al incluir la direccion ULA asociada)
+fe80::/64 dev enp0s3 proto kernel metric 256 pref médium --> dirección de red de enlace local por enp0s3 (configurada automáticamente según se activa enp0s3)
+fe80::/64 dev enp0s8 proto kernel metric 256 pref médium --> dirección de red de enlace local por enp0s8 (configurada automáticamente según se activa enp0s8)
+
+**EJ10**
+vm_1
+ip -6 r a default via fd00:0:0:a::3
+vm_2
+ip -6 r a default via fd00:0:0:a::3
+vm_4
+ip -6 r a default via fd00:0:0:b::3
+vm_1
+ping6 fd00:0:0:b::4
+
+**EJ11*
+__ENP0S3___
+MAC Origen		MAC Destino						Ip Origen					Ip destino 					ICMPv6
+08:00:27:f7:54:25(vm1)  33:33:FF:00:00:03(generada con IP multicast)		FE80::A00:27FF:FEF7:5425 (enlace local VM1)      FF02::1:FF00:3(multicast nodo solicitado vm3) 	Neighbor solicitation
+MAC VM3 ENP0S3		MAC VM1							IP ULA VM3ROUTER ENP0S3				ENLACE LOCAL VM1			NEIGHBOR ADVERTISEMENT
+
+--> Asocia la IP ULA del router a su MAC (ENLACE LOCAL -> nodo multicast sacada de la ULA de vm3 que hay en la tabla de rutas). Hace un nuevo neighbor :Como un mismo nodo puede tener varias direcciones confirma que desde vm1 con la ULA se puede alcanzar el router (ULA -> ULA) ¿Es alcanzable el destino con esta IPv6 como origen?
+08:00:27:f7:54:25(vm1)  33:33:FF:00:00:03(generada con IP multicast)		FD00::0:0:A:1(ULA VM1)      FF02::1:FF00:3(multicast nodo solicitado vm3)	Neighbor solicitation
+MAC VM3 ENP0S3		MAC VM1							IP ULA VM3ROUTER ENP0S3	    IP ULA VM1						Neighbor advertisement
+MAC VM1			MAC VM3 ENP0S3						IP ULA VM1		    IP ULA VM4						Echo request
+
+
+__ENP0S8___
+MAC Origen		MAC Destino						Ip Origen					Ip destino 					ICMPv6
+MAC VM3 ENP0S8		33:33:FF:00:00:04(generada con IP multicast nodo)	Ip enlace local vm3 enp0s8			Ip multicast nodo solicitado vm4		Neighbor solicitation
+MAC VM4			MAC VM3 ENP0S8						Ip ULA VM4					Ip enlace local vm3 enp0s8			Neighbor advertisement
+MAC VM3 ENP0S8		MAC VM4							IP ULA VM1					IP ULA VM4					Echo request
+
+
+
+***EJ13***
+/etc/frr/frr.conf
+interface enp0s3 
+no ipv6 nd suppress-ra 
+ipv6 nd prefix fd00:0:0:a::/64 
+interface enp0s8
+no ipv6 nd suppress-ra 
+ipv6 nd prefix fd00:0:0:b::/64 
+
+**EJ14**
+inet6 fd00::b:a00:27ff:fe77:2a03/64 scope global dynamic mngtmpaddr
+
+***EJ15**
+1. Subo interfaz
+2. MLD → me uno a multicasts
+3. DAD → valido mi link-local con neighbor solicitation
+4. RS → busco routers
+5. RA → recibo prefijo
+6. ND → resuelvo MAC del router
+7. Ya puedo comunicar
+
+
+
+
+
+
+
+
+
+
+

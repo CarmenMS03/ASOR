@@ -1,0 +1,105 @@
+*****EJ1******
+__vm_1
+ip address o ip link para ver las interfaces de red y su dirección MAC
+
+*****EJ2******
+__vm_1
+ip link set enp0s3 up
+ip address add 192.168.0.1/24 dev enp0s3
+
+__vm_2
+ip link set enp0s3 up
+ip address add 192.168.0.2/24 dev enp0s3
+
+__vm_3router
+ip link set enp0s3 up
+ip link set enp0s8 up
+ip address add 192.168.0.3/24 dev enp0s3
+ip address add 172.16.0.3/24 dev enp0s8
+
+*****EJ3******
+MAC ORIGEN		MAC DESTINO		PROTOCOLO	IP ORIGEN	IP DESTINO	TIPO
+08:00:27:F7:54:25(vm1)	FF:...:FF		ARP		192.168.0.1	192.168.0.2	Request
+08:00:27:88:45:3f(vm2)	08:00:27:F7:54:25(vm1) 	ARP		192.168.0.2	192.168.0.1	Reply
+08:00:27:F7:54:25(vm1)	08:00:27:88:45:3f(vm2) 	ICMP		192.168.0.1	192.168.0.2	Echo Request
+08:00:27:88:45:3f(vm2)	08:00:27:F7:54:25(vm1)	ICMP		192.168.0.2	192.168.0.1	Echo Reply
+
+*****EJ4******
+__vm_1
+ip neigh: muestra la ip asociada a cierta MAC después de resolver haciendo ARP
+
+*****EJ5******
+__vm_4
+ip link set enp0s3 up
+ip a a 172.16.0.4/16 dev enp0s3
+ping 172.16.0.3
+
+*****EJ7******
+__vm_1
+ip route add default via 192.168.0.3
+
+__vm_2
+ip route add default via 192.168.0.3
+
+
+*****EJ8******
+__vm_4
+ip route add 192.168.0.0/24 via 172.16.0.3
+
+
+*****EJ9******
+___enp0s3
+MAC ORIGEN	MAC DESTINO	PROTOCOLO	IP ORIGEN		IP DESTINO		TIPO
+vm1		FF:..:FF	ARP		192.168.0.1(vm1) 	192.168.0.3(vm3router)	Request
+vm3router	vm1		ARP		192.168.0.3(vm3router)	192.168.0.1(vm1)	Reply
+vm1		vm3router	ICMP		192.168.0.1(vm1)	172.16.0.4(vm4)		Echo Request
+vm3router	vm1		ICMP		172.16.0.4(vm4)		192.168.0.1(vm1)	Echo Reply
+
+___enp0s8
+MAC ORIGEN	MAC DESTINO	PROTOCOLO	IP ORIGEN		IP DESTINO		TIPO
+vm3router	FF:..:FF	ARP		172.16.0.3(vm3router) 	172.16.0.4(vm4)		Request
+vm4		vm3router	ARP		172.16.0.4(vm4)		172.16.0.3(vm3router)	Reply
+vm3router	vm4		ICMP		192.168.0.1(vm1)	172.16.0.4(vm4)		Echo Request
+vm4		vm3router	ICMP		172.16.0.4(vm4)		192.168.0.1(vm1)	Echo Reply
+
+
+*****EJ10******
+__vm_1
+ip a d 192.168.0.1/24 dev enp0s3
+
+__vm_2
+ip a d 192.168.0.2/24 dev enp0s3
+
+__vm_4
+ip a d 172.16.0.4/16 dev enp0s3
+
+*****EJ11******
+___/etc/dhcp/dhcp.conf
+
+subnet 192.168.0.0 netmask 255.255.255.0 { 
+    range 192.168.0.50 192.168.0.100; 
+    option routers 192.168.0.3; 
+    option broadcast-address 192.168.0.255; 
+} 
+
+subnet 172.16.0.0 netmask 255.255.0.0 { 
+    range 172.16.0.50 172.16.0.100; 
+    option routers 172.16.0.3; 
+    option broadcast-address 172.16.255.255; 
+}
+
+*****EJ12******
+
+IP ORIGEN		IP DESTINO	MENSAJE DHCP	OPCIONES DHCP
+0.0.0.0			255.255.255.255	Boot Request	Discover
+192.168.0.3(vm3router)	192.168.0.50	Boot Reply	Offer --> Acepta el unicast con la IP ofrecida(después de comprobar que esta libre) con la MAC del cliente
+0.0.0.0			255.255.255.255	Boot Request	Request
+192.168.0.3(vm3router)	192.168.0.50	Boot Reply	ACK
+
+Hay comprobaciones con el protocolo ARP de que la IP no esta en uso antes de ofrecerla.
+
+
+
+
+
+

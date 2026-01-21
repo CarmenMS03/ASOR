@@ -1,0 +1,36 @@
+****EJ5**** mal 
+__vm_1
+iptables -A OUTPUT -p tcp --tcp-flags SYN,ACK SYN,ACK --sport 7777 -j DROP
+para borrar: iptables -F;
+
+--> Mejor este iptables que bloquear el mensaje en SYN
+
+__vm_2
+iptables -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK --sport 7777 -j DROP; esta deja al servidor en SYN-RECV
+iptables -A INPUT -p tcp --tcp-flags FIN,ACK FIN,ACK --sport 7777 -j DROP; esta deja al servidor en LAST-ACK
+
+--> No creo que sea posible escribir una regla para ambas cosas ya que si no se establece la conexión y el servidor queda bloqueado en SYN-RECV nunca llegara a LAST-ACK.
+
+--> Con el ALL,ACK se bloquean los paquetes que tienen el flag ack activado y ningún otro (cuidado porque hay otros flags además de los conocidos y, aunque en teoría el ultimo ack de establecimiento es un ack cliente-servidor y quedaría el servidor en SYN-RECV, hay flags que Linux activa y que son raros así que no funciona el iptables del word).
+
+****EJ6*****
+__vm_3router
+iptables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE
+
+*****EJ9****
+__vm_3router
+iptables -t nat -A PREROUTING -i enp0s8 -p tcp --dport 80 -j DNAT --to 192.168.0.1:7777 
+
+****EJ10**** mal 
+__vm_2
+iptables -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK -j DROP 
+hping3 -S -p 7777 --flood 192.168.0.1
+
+Con las cookies activadas si deja a vm_3router conectarse, si se desactivan el flooding sí funciona y no puede establecer conexión (queda en SYN-SENT)
+
+*****EJ11****
+__vm_1
+nc -l 7777
+
+__vm_2
+nc -zv 192.168.0.1  7775-7780

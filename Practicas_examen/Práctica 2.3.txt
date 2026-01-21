@@ -1,0 +1,61 @@
+****EJ8****
+$TTL 2d
+$ORIGIN labfdi.es.
+labfdi.es.  IN  SOA  ns.labfdi.es. contact.labfdi.es. (
+                  2003080800 ; serial number
+                  3h         ; refresh
+                  15M        ; update retry
+                  3W12h      ; expiry
+                  2h20M      ; nx ttl
+                  )
+              IN    NS   ns.labfdi.es.
+              IN    MX   10 mail.labfdi.es.
+ns            IN    A    192.168.0.1
+mail	      IN    A	 192.168.0.250
+www           IN    A    192.168.0.200
+www           IN    AAAA fd00::1
+correo        IN    CNAME mail.labfdi.es.
+
+Para comprobar: ss -lnut (listen, sin resolver nombres, udep y tcp)
+Escuchan en 192.168.0.1:53 (red local ipv4) 127.0.0.1:53 (loopback ipv4) [::1]:53 (loopback ipv6) [fe80::a00:27ff:fe43:dfc7]%enp0s3:53 (red local ipv6 generada a partir de MAC)
+
+
+****EJ9****
+search labfdi.es
+nameserver 192.168.0.1
+
+****EJ10***
+dig @192.168.0.1 labfdi.es
+dig @192.168.0.1 www.labfdi.es
+dig @192.168.0.1 mail.labfdi.es
+dig @192.168.0.1 ns.labfdi.es
+dig @192.168.0.1 correo.labfdi.es
+dig @192.168.0.1 www.labfdi.es AAAA
+dig @192.168.0.1 labfdi.es MX
+dig @192.168.0.1 labfdi.es NS
+
+--> Usan UDP con el puerto 53 como servidor, si la respuesta es muy grande TCP con puerto 53.
+--> Protocolo DNS
+- Un paquete de consulta (query) tiene: id (identificar la consulta), flags, questions (nombre consultado y el registro), length.
+- Un paquete de respuesta (answer) tiene: answers (registros dados), authority (SOA si el servidor es autoritativo y no hay A), additional (registros opcionales).
+
+****EJ13****
+$TTL 2d
+$ORIGIN 0.168.192.in-addr.arpa.
+0.168.192.in-addr.arpa.  IN  SOA  ns.labfdi.es. contact.labfdi.es. (
+                  2003080800 ; serial number
+                  3h         ; refresh
+                  15M        ; update retry
+                  3W12h      ; expiry
+                  2h20M      ; nx ttl
+                  )
+              IN    NS   ns.labfdi.es.
+
+1             IN  PTR ns.labfdi.es.
+200           IN  PTR www.labfdi.es.
+250           IN  PTR mail.labfdi.es.
+
+***EJ14***
+dig @192.168.0.1 250.0.168.192.in-addr.arpa PTR
+
+
