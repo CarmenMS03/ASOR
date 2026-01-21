@@ -32,7 +32,7 @@ A continuación se detallan las prácticas realizadas durante el curso:
 
 ## ⚖️ Licencia
 Este repositorio y su contenido están protegidos por **Copyright © 2026 CarmenMS03**. Todos los derechos reservados.
-El material se comparte exclusivamente con fines educativos y de portafolio personal.
+El material se comparte exclusivamente con fines educativos y de portafolio personal. Los enunciados de las prácticas son propiedad intelectual de la **Universidad Complutense de Madrid**.
 
 ## 👤 Autor
 * **CarmenMS03** - [GitHub Profile](https://github.com/CarmenMS03)
@@ -72,7 +72,7 @@ The following practical assignments are included in this repository:
 
 ## ⚖️ License
 This repository and its content are protected by **Copyright © 2026 CarmenMS03**. All rights reserved.
-This material is shared exclusively for educational and personal portfolio purposes.
+This material is shared exclusively for educational and personal portfolio purposes. The assignment descriptions are the intellectual property of **Universidad Complutense de Madrid**.
 
 ## 👤 Author
 * **CarmenMS03** - [GitHub Profile](https://github.com/CarmenMS03)
