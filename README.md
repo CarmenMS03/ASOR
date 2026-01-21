@@ -31,7 +31,7 @@ A continuación se detallan las prácticas realizadas durante el curso:
 * **Redes:** Protocolos IPv4/IPv6, enrutamiento dinámico (RIP, BGP) y sockets.
 
 ## ⚖️ Licencia
-Este repositorio y su contenido están protegidos por **Copyright © 2024 CarmenMS03**. Todos los derechos reservados.
+Este repositorio y su contenido están protegidos por **Copyright © 2026 CarmenMS03**. Todos los derechos reservados.
 El material se comparte exclusivamente con fines educativos y de portafolio personal.
 
 ## 👤 Autor
@@ -71,7 +71,7 @@ The following practical assignments are included in this repository:
 * **Networking:** IPv4/IPv6 protocols, dynamic routing (RIP, BGP), and sockets.
 
 ## ⚖️ License
-This repository and its content are protected by **Copyright © 2024 CarmenMS03**. All rights reserved.
+This repository and its content are protected by **Copyright © 2026 CarmenMS03**. All rights reserved.
 This material is shared exclusively for educational and personal portfolio purposes.
 
 ## 👤 Author
